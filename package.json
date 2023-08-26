@@ -1,0 +1,28 @@
+{
+  "name": "wetube-chal",
+  "version": "1.0.0",
+  "description": "2023.0822.start",
+  "scripts": {
+    "dev": "nodemon --exec babel-node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moonssa/wetube-chal.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/moonssa/wetube-chal/issues"
+  },
+  "homepage": "https://github.com/moonssa/wetube-chal#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.22.10",
+    "@babel/node": "^7.22.10",
+    "@babel/preset-env": "^7.22.10",
+    "nodemon": "^3.0.1"
+  }
+}
