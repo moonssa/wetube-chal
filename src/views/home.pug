@@ -1,5 +1,8 @@
 extends base
+include mixins/video
 
 block content 
   h1=pageTitle
-  input(placeholder="What's your name?")
+  
+  each story in videos
+    +video(story)

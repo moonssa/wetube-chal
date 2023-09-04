@@ -1,0 +1,7 @@
+extends base
+block content
+  form(method="POST" action="")
+    input(name="title" placeholder=`${video.title}`)
+    input(name="views" placeholder=`${video.views}`)
+    input(name="genres" placeholder=`${video.genres}`)
+    input(type="submit")

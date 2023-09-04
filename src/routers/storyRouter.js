@@ -14,8 +14,8 @@ const deleteStory = (req, res) => {
   return res.send(`<h1> ${id}: Delete Story Page </h1>`);
 };
 
-storyRouter.get("/:id", watchStory);
-storyRouter.get("/:id/edit", editStory);
-storyRouter.get("/:id/delete", deleteStory);
+storyRouter.get("/:id(\\d+)", watchStory);
+storyRouter.get("/:id(\\d+)/edit", editStory);
+storyRouter.get("/:id(\\d+)/delete", deleteStory);
 
 export default storyRouter;

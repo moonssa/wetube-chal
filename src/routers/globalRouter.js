@@ -3,8 +3,9 @@ import { handleJoin, handleLogin } from "../controllers/userController";
 import {
   handleNewStory,
   handleTrendStory,
-  handleHome,
 } from "../controllers/storyControllers";
+
+import { handleHome } from "../controllers/videoController";
 
 const globalRouter = express.Router("/");
 
