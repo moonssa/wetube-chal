@@ -5,11 +5,11 @@ import {
   handleTrendStory,
 } from "../controllers/storyControllers";
 
-import { handleHome } from "../controllers/videoController";
+import { home } from "../controllers/videoController";
 
 const globalRouter = express.Router("/");
 
-globalRouter.get("/", handleHome);
+globalRouter.get("/", home);
 globalRouter.get("/trending", handleTrendStory);
 globalRouter.get("/new", handleNewStory);
 globalRouter.get("/login", handleLogin);
