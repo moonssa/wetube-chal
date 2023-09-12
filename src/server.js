@@ -1,6 +1,7 @@
 import express from "express";
 import morgan from "morgan";
 import session from "express-session";
+import MongoStore from "connect-mongo";
 
 import storyRouter from "./routers/storyRouter";
 import userRouter from "./routers/userRouter";
@@ -19,9 +20,15 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(
   session({
-    secret: "hello",
-    resave: true,
-    saveUninitialized: true,
+    secret: process.env.COOKIE_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 20000,
+    },
+    store: MongoStore.create({
+      mongoUrl: process.env.DB_URL,
+    }),
   }),
 );
 /*
@@ -31,7 +38,7 @@ app.use((req, res, next) => {
   console.log(req.headers);
   next();
 });
-
+*/
 // 저장된 session 볼 수 있다.
 app.use((req, res, next) => {
   req.sessionStore.all((error, sessions) => {
@@ -41,7 +48,7 @@ app.use((req, res, next) => {
 });
 
 // session test
-
+/*
 app.get("/add-one", (req, res, next) => {
   req.session.potato += 1;
   return res.send(`${req.session / id}\n${req.session.potato}`);
