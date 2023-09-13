@@ -1,6 +1,6 @@
-import { makeConsoleLogger } from "@notionhq/client/build/src/logging";
 import User from "../models/User";
 import bcrypt from "bcrypt";
+import fetch from "node-fetch";
 
 export const retrieveAllUsers = (req, res) => res.send("<h1> Users Page </h1>");
 
@@ -86,4 +86,84 @@ export const logout = (req, res) => {
     }
     return res.redirect("/");
   });
+};
+
+export const startGithubLogin = (req, res) => {
+  //  https://github.com/login/oauth/authorize?client_id=26594457b60fd5ea65a2&allow_signup=false&scope=read:user user:email
+  const baseUrl = "https://github.com/login/oauth/authorize?";
+  const config = {
+    client_id: process.env.GH_CLIENT,
+    allow_signup: false,
+    scope: "read:user user:email",
+  };
+  const params = new URLSearchParams(config).toString();
+  const finalUrl = `${baseUrl}${params}`;
+  console.log(finalUrl);
+  return res.redirect(finalUrl);
+};
+
+export const finishGithubLogin = async (req, res) => {
+  const { code } = req.query;
+  const baseUrl = "https://github.com/login/oauth/access_token";
+  const config = {
+    client_id: process.env.GH_CLIENT,
+    client_secret: process.env.GH_SECRET,
+    code: code,
+  };
+  const params = new URLSearchParams(config).toString();
+  const finalUrl = `${baseUrl}?${params}`;
+  console.log(finalUrl);
+
+  const token_req = await (
+    await fetch(finalUrl, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+      },
+    })
+  ).json();
+  // const json = await data.json();
+  console.log(token_req);
+  if ("access_token" in token_req) {
+    const { access_token } = token_req;
+    const apiUrl = "https://api.github.com";
+    const userData = await (
+      await fetch(`${apiUrl}/user`, {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      })
+    ).json();
+    console.log(userData);
+    const emailData = await (
+      await fetch(`${apiUrl}/user/emails`, {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      })
+    ).json();
+    console.log(emailData);
+    const emailObj = emailData.find(
+      (email) => email.primary === true && email.verified == true,
+    );
+    console.log(emailObj);
+    if (!emailObj) {
+      return res.redirect("/login");
+    } else {
+      const existingUser = await User.findOne({ email: emailObj.email });
+      if (existingUser) {
+        req.session.loggedIn = true;
+        req.session.user = existingUser;
+        return res.redirect("/");
+        // return res.render("home");
+      } else {
+        return res.redirect("/login");
+      }
+    }
+  } else {
+    // rendering 을 하면  http://localhost:3000/users/github/finish?code=224882c4b476cb6fae5c  이와같이 URL이 노출
+    // return res.render("login");
+    return res.redirect("/login");
+  }
+  // return res.send(JSON.stringify(json));
 };
