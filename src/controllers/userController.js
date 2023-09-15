@@ -21,7 +21,7 @@ export const getLogin = (req, res) => {
 
 export const postLogin = async (req, res) => {
   const { username, password } = req.body;
-  const user = await User.findOne({ username });
+  const user = await User.findOne({ username, socialOnly: false });
   if (!user) {
     return res.status(404).render("login", {
       pageTitle: "Login",
@@ -149,21 +149,134 @@ export const finishGithubLogin = async (req, res) => {
     console.log(emailObj);
     if (!emailObj) {
       return res.redirect("/login");
-    } else {
-      const existingUser = await User.findOne({ email: emailObj.email });
-      if (existingUser) {
-        req.session.loggedIn = true;
-        req.session.user = existingUser;
-        return res.redirect("/");
-        // return res.render("home");
-      } else {
-        return res.redirect("/login");
-      }
     }
+
+    let user = await User.findOne({ email: emailObj.email });
+    if (!user) {
+      user = await User.create({
+        name: userData.name,
+        avatarUrl: userData.avatar_url,
+        email: emailObj.email,
+        username: userData.login,
+        password: "",
+        location: userData.location,
+        socialOnly: true,
+      });
+    }
+    req.session.loggedIn = true;
+    req.session.user = user;
+    return res.redirect("/");
+    // return res.render("home");
   } else {
     // rendering 을 하면  http://localhost:3000/users/github/finish?code=224882c4b476cb6fae5c  이와같이 URL이 노출
     // return res.render("login");
     return res.redirect("/login");
   }
   // return res.send(JSON.stringify(json));
+};
+
+export const startNaverLogin = (req, res) => {
+  const baseUrl = "https://nid.naver.com/oauth2.0/authorize?";
+  const redirectURI = encodeURI("http://localhost:3000/users/naver/finish");
+
+  const config = {
+    client_id: process.env.NAVER_CLIENT,
+    redirect_uri: redirectURI,
+    response_type: "code",
+    state: "state_string",
+  };
+
+  const params = new URLSearchParams(config).toString();
+  const finalUrl = `${baseUrl}${params}`;
+  console.log(finalUrl);
+  return res.redirect(finalUrl);
+};
+
+export const finishNaverLogin = async (req, res) => {
+  console.log(req.query);
+  const { code, state } = req.query;
+  const redirectURI = encodeURI("http://localhost:3000/users/naver/finish");
+  const baseUrl = "https://nid.naver.com/oauth2.0/token";
+  const config = {
+    grant_type: "authorization_code",
+    client_id: process.env.NAVER_CLIENT,
+    client_secret: process.env.NAVER_SECRET,
+    redirect_uri: redirectURI,
+    code: code,
+    state: state,
+  };
+
+  const params = new URLSearchParams(config);
+  const finalUrl = `${baseUrl}?${params}`;
+  console.log(finalUrl);
+
+  const tokenReq = await (
+    await fetch(finalUrl, {
+      method: "POST",
+      headers: {
+        "X-Naver-Client-Id": config.client_id,
+        "X-Naver-Client-Secret": config.client_secret,
+      },
+    })
+  ).json();
+
+  console.log(tokenReq);
+  if ("access_token" in tokenReq) {
+    const { access_token } = tokenReq;
+    const apiUrl = "https://openapi.naver.com/v1/nid/me";
+
+    const userData = await (
+      await fetch(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      })
+    ).json();
+    console.log(userData);
+
+    const { email, name } = userData.response;
+    let user = await User.findOne({ email: email });
+    if (!user) {
+      user = await User.create({
+        name: name,
+        // avatarUrl: userData.avatar_url,
+        email: email,
+        username: name,
+        password: "",
+        // location: userData.location,
+        socialOnly: true,
+      });
+    }
+    req.session.loggedIn = true;
+    req.session.user = user;
+    return res.redirect("/");
+    // return res.render("home");
+  } else {
+    // rendering 을 하면  http://localhost:3000/users/github/finish?code=224882c4b476cb6fae5c  이와같이 URL이 노출
+    // return res.render("login");
+    return res.redirect("/login");
+  }
+  // return res.send(JSON.stringify(json));
+};
+
+export const getEdit = (req, res) => {
+  return res.render("edit-profile", { pageTitle: "Edit profile" });
+};
+
+export const postEdit = async (req, res) => {
+  const {
+    session: {
+      user: { _id },
+    },
+    body: { name, email, username, location },
+  } = req;
+
+  const updatedUser = await User.findByIdAndUpdate(
+    _id,
+    { name, email, username, location },
+    { new: true },
+  );
+  req.session.user = updatedUser;
+
+  return res.redirect("/users/edit");
 };
