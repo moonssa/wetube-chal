@@ -262,7 +262,7 @@ export const finishNaverLogin = async (req, res) => {
 export const getEdit = (req, res) => {
   return res.render("edit-profile", { pageTitle: "Edit profile" });
 };
-
+/*
 export const postEdit = async (req, res) => {
   const {
     session: {
@@ -270,6 +270,40 @@ export const postEdit = async (req, res) => {
     },
     body: { name, email, username, location },
   } = req;
+
+ 
+
+  const updatedUser = await User.findByIdAndUpdate(
+    _id,
+    { name, email, username, location },
+    { new: true },
+  );
+  req.session.user = updatedUser;
+
+  return res.redirect("/users/edit");
+};
+*/
+
+export const postEdit = async (req, res) => {
+  const {
+    session: {
+      user: { _id, email: sessionEmail, username: sessionUsername },
+    },
+    body: { name, email, username, location },
+  } = req;
+
+  if (sessionEmail !== email || sessionUsername !== username) {
+    const exists = await User.exists({
+      $or: [{ username }, { email }],
+      $and: [{ _id: { $ne: _id } }],
+    });
+    if (exists) {
+      return res.status(400).render("edit-profile", {
+        pageTitle: "Edit profile",
+        errorMessage: "입력하신 이메일, 유저네임 사용자가 이미 존재합니다.",
+      });
+    }
+  }
 
   const updatedUser = await User.findByIdAndUpdate(
     _id,
