@@ -11,6 +11,8 @@ import {
   finishNaverLogin,
   getEdit,
   postEdit,
+  getChangePassword,
+  postChangePassword,
 } from "../controllers/userController";
 import { protectMiddleware, publicOnlyMiddleware } from "../middleware";
 
@@ -28,5 +30,11 @@ userRouter.get("/naver/finish", finishNaverLogin);
 userRouter.get("/", retrieveAllUsers);
 userRouter.get("/:id([0-9a-f]{24})", retrieveUser);
 userRouter.get("/:id([0-9a-f]{24})/edit-profile", editProfile);
+
+userRouter
+  .route("/change-password")
+  .all(protectMiddleware)
+  .get(getChangePassword)
+  .post(postChangePassword);
 
 export default userRouter;

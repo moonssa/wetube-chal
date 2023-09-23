@@ -40,6 +40,7 @@ export const postLogin = async (req, res) => {
 
   req.session.loggedIn = true;
   req.session.user = user;
+
   return res.redirect("/");
 };
 
@@ -313,4 +314,41 @@ export const postEdit = async (req, res) => {
   req.session.user = updatedUser;
 
   return res.redirect("/users/edit");
+};
+
+export const getChangePassword = (req, res) => {
+  if (req.session.user.socialOnly === true) {
+    return res.redirect("/");
+  }
+  return res.render("users/change-password", { pageTitle: "Change Password" });
+};
+
+export const postChangePassword = async (req, res) => {
+  const {
+    session: {
+      user: { _id },
+    },
+    body: { oldPassword, newPassword, newPasswordConfirm },
+  } = req;
+
+  const user = await User.findById({ _id });
+  const ok = await bcrypt.compare(oldPassword, user.password);
+  if (!ok) {
+    return res.status(400).render("users/change-password", {
+      pageTitle: "Change Password",
+      errorMessage: "로그인 패스워드가 일치하지 않습니다.",
+    });
+  }
+
+  if (newPassword !== newPasswordConfirm) {
+    return res.status(400).render("users/change-password", {
+      pageTitle: "Change Password",
+      errorMessage: " 새로운 패스워드가 일치하지 않습니다.",
+    });
+  }
+
+  user.password = newPassword;
+  await user.save();
+
+  return res.redirect("/users/logout");
 };

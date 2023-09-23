@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
   location: String,
 });
 
+// user.save()를 할때 동작됨. 또는 create() 시에..
 userSchema.pre("save", async function () {
   this.password = await bcrypt.hash(this.password, 5);
 });
