@@ -28,6 +28,9 @@ export const getUpload = async (req, res) => {
 
 export const postUpload = async (req, res) => {
   const {
+    session: {
+      user: { _id },
+    },
     body: { title, description, hashtags },
     file,
   } = req;
@@ -39,6 +42,7 @@ export const postUpload = async (req, res) => {
       description,
       fileUrl: file.path,
       hashtags: Video.formatHashtags(hashtags),
+      owner: _id,
       meta: {
         views: 0,
         rating: 0,

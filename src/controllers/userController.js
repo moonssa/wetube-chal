@@ -4,10 +4,17 @@ import fetch from "node-fetch";
 
 export const retrieveAllUsers = (req, res) => res.send("<h1> Users Page </h1>");
 
-export const retrieveUser = (req, res) => {
+export const retrieveProfile = async (req, res) => {
   const { id } = req.params;
   console.log(req);
-  return res.render("retrieve", { pageTitle: `${id} 의 User Page` });
+  const user = await User.findById(id);
+  if (!user) {
+    return res.status(404).render("404", { pageTitle: "User not found" });
+  }
+  return res.render("users/profile", {
+    pageTitle: user.name,
+    user,
+  });
 };
 
 export const editProfile = (req, res) => {

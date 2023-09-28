@@ -2,7 +2,7 @@ import express from "express";
 
 import {
   retrieveAllUsers,
-  retrieveUser,
+  retrieveProfile,
   editProfile,
   logout,
   startGithubLogin,
@@ -36,7 +36,7 @@ userRouter.get("/naver/start", startNaverLogin);
 userRouter.get("/naver/finish", finishNaverLogin);
 
 userRouter.get("/", retrieveAllUsers);
-userRouter.get("/:id([0-9a-f]{24})", retrieveUser);
+userRouter.get("/:id([0-9a-f]{24})", retrieveProfile);
 userRouter.get("/:id([0-9a-f]{24})/edit-profile", editProfile);
 
 userRouter
