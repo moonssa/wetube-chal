@@ -15,9 +15,9 @@ import {
   postChangePassword,
 } from "../controllers/userController";
 import {
+  avatarUpload,
   protectMiddleware,
   publicOnlyMiddleware,
-  uploadFiles,
 } from "../middleware";
 
 const userRouter = express.Router("/users");
@@ -27,7 +27,7 @@ userRouter
   .route("/edit")
   .all(protectMiddleware)
   .get(getEdit)
-  .post(uploadFiles.single("avatar"), postEdit);
+  .post(avatarUpload.single("avatar"), postEdit);
 
 userRouter.get("/github/start", publicOnlyMiddleware, startGithubLogin);
 userRouter.get("/github/finish", publicOnlyMiddleware, finishGithubLogin);

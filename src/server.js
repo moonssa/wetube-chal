@@ -52,7 +52,7 @@ app.get("/add-one", (req, res, next) => {
 });
 */
 app.use(localsMiddleware);
-
+app.use("/uploads", express.static("uploads"));
 app.use("/", rootRouter);
 app.use("/stories", storyRouter);
 app.use("/users", userRouter);
