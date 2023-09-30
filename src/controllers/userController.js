@@ -1,19 +1,24 @@
 import User from "../models/User";
 import bcrypt from "bcrypt";
 import fetch from "node-fetch";
+import Video from "../models/Video";
 
 export const retrieveAllUsers = (req, res) => res.send("<h1> Users Page </h1>");
 
 export const retrieveProfile = async (req, res) => {
   const { id } = req.params;
   console.log(req);
-  const user = await User.findById(id);
+  const user = await User.findById(id).populate("videos");
+  console.log(user);
   if (!user) {
     return res.status(404).render("404", { pageTitle: "User not found" });
   }
+  // const videos = await Video.find({ owner: user._id });
+
   return res.render("users/profile", {
     pageTitle: user.name,
     user,
+    // videos,
   });
 };
 
