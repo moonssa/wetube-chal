@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
 import bcrypt from "bcrypt";
+import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
   socialOnly: { type: Boolean, default: false },
@@ -16,7 +16,9 @@ const userSchema = new mongoose.Schema({
 
 // user.save()를 할때 동작됨. 또는 create() 시에..
 userSchema.pre("save", async function () {
-  this.password = await bcrypt.hash(this.password, 5);
+  if (this.isModified("password")) {
+    this.password = await bcrypt.hash(this.password, 5);
+  }
 });
 
 const User = mongoose.model("User", userSchema);
