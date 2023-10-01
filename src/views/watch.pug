@@ -4,7 +4,7 @@ include mixins/video
 block content
   div#videoContainer
     video(src=`/${video.fileUrl}`)
-    div   
+    div#videoControls 
       button#play Play 
       button#mute Mute 
       input(type="range", step="0.1",value=0.5, min="0", max="1")#volume
