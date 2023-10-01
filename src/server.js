@@ -8,6 +8,7 @@ import userRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter";
 import rootRouter from "./routers/rootRouter";
 import { localsMiddleware } from "./middleware";
+import apiRouter from "./routers/apiRouter";
 
 const app = express();
 
@@ -58,5 +59,6 @@ app.use("/", rootRouter);
 app.use("/stories", storyRouter);
 app.use("/users", userRouter);
 app.use("/videos", videoRouter);
+app.use("/api", apiRouter);
 
 export default app;
