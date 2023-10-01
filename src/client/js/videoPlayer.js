@@ -13,6 +13,7 @@ const fullScreenIcon = fullScreenBtn.querySelector("i");
 const videoContainer = document.getElementById("videoContainer");
 const videoControls = document.getElementById("videoControls");
 
+const SPACE = 32;
 let volumeValue = 0.5;
 video.volume = volumeValue;
 let controlsTimeout = null;
@@ -109,16 +110,25 @@ const handleMouseLeave = () => {
   controlsTimeout = setTimeout(hideControls, 3000);
 };
 
+const handleKeyup = (e) => {
+  e.preventDefault();
+  const keyCode = e.keyCode;
+  if (keyCode === SPACE) {
+    handlePlay();
+  }
+};
+
 playBtn.addEventListener("click", handlePlay);
 muteBtn.addEventListener("click", handleMute);
 volumeRange.addEventListener("input", handleVolumeChange);
 
 video.addEventListener("loadedmetadata", handleLoadedMetaData);
 video.addEventListener("timeupdate", handleTimeUpdate);
-video.addEventListener("mousemove", handleMouseMove);
-video.addEventListener("mouseleave", handleMouseLeave);
+videoContainer.addEventListener("mousemove", handleMouseMove);
+videoContainer.addEventListener("mouseleave", handleMouseLeave);
 
 timeline.addEventListener("input", handleTimelineChange);
 fullScreenBtn.addEventListener("click", handleFullScreen);
 
 document.addEventListener("fullscreenchange", handleExitFullscreen);
+document.addEventListener("keyup", handleKeyup);
