@@ -8,14 +8,7 @@ block content
     input(name="username" , type="text", placeholder="username", required)
     input(name="password" , type="password", placeholder="password", required)
     input(type="submit", value="Log in")
-    br
-    a(href="/users/github/start") Continue with Github &rarr;
-    br
-    a(href="/users/naver/start") Continue with Naver &rarr;
-    br
-    a(href="/users/kakao/start") Continue with Kakao &rarr;
-
-  hr
-  div 
+    include partials/social-login
+  div.auth-switch 
     span Already have an account?
-    a(href="/join") Create an account  &rarr;
+    a(href="/join")  Create an account  &rarr;
