@@ -223,12 +223,22 @@ input:not(input[type=range])::placeholder {
 input[type=submit],
 .social__btn {
   padding: 12px 20px;
-  background-color: white;
-  color: #cc0d00;
-  text-align: center;
+  background-color: white !important;
+  color: #cc0d00 !important;
+  text-align: center !important;
   border-radius: 5px;
   cursor: pointer;
   display: block;
+  border: none;
+}
+input[type=submit]:focus,
+.social__btn:focus {
+  outline: none;
+}
+input[type=submit]:disabled,
+.social__btn:disabled {
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 .empty__message {
@@ -384,6 +394,20 @@ input[type=submit],
 }
 .edit-profile__password a {
   text-decoration: underline;
+}
+
+.upload__container {
+  width: 100%;
+}
+.upload__container .upload__video {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.upload__container .upload__video video {
+  max-width: 100%;
+  margin-bottom: 10px;
 }
 
 a {

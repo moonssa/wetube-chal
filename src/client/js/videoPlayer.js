@@ -139,3 +139,7 @@ fullScreenBtn.addEventListener("click", handleFullScreen);
 
 document.addEventListener("fullscreenchange", handleExitFullscreen);
 document.addEventListener("keyup", handleKeyup);
+
+if (video.readyState > 2) {
+  handleLoadedMetaData();
+}
