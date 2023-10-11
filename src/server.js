@@ -1,6 +1,7 @@
 import express from "express";
 import morgan from "morgan";
 import session from "express-session";
+import flash from "express-flash";
 import MongoStore from "connect-mongo";
 
 import storyRouter from "./routers/storyRouter";
@@ -38,13 +39,14 @@ app.use((req, res, next) => {
 });
 */
 // 저장된 session 볼 수 있다.
+/*
 app.use((req, res, next) => {
   req.sessionStore.all((error, sessions) => {
     console.log(sessions);
     next();
   });
 });
-
+*/
 app.use((req, res, next) => {
   res.header("Cross-Origin-Embedder-Policy", "require-corp");
   res.header("Cross-Origin-Opener-Policy", "same-origin");
@@ -57,7 +59,9 @@ app.get("/add-one", (req, res, next) => {
   return res.send(`${req.session / id}\n${req.session.potato}`);
 });
 */
+
 app.use(localsMiddleware);
+app.use(flash());
 app.use("/uploads", express.static("uploads"));
 app.use("/static", express.static("assets"));
 app.use("/", rootRouter);

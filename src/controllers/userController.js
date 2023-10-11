@@ -48,6 +48,7 @@ export const postLogin = async (req, res) => {
       errorMessage: "비밀번호가 맞지 않습니다.",
     });
   }
+
   // store session infomation
 
   req.session.loggedIn = true;
@@ -93,12 +94,18 @@ export const postJoin = async (req, res) => {
 };
 
 export const logout = (req, res) => {
+  req.session.user = null;
+  req.session.loggedIn = false;
+  req.flash("info", "로그아웃 되었습니다.");
+  return res.redirect("/");
+  /*
   req.session.destroy((error) => {
     if (error) {
       console.log("Error destry session", error);
     }
     return res.redirect("/");
   });
+  */
 };
 
 export const startGithubLogin = (req, res) => {
@@ -370,6 +377,6 @@ export const postChangePassword = async (req, res) => {
 
   user.password = newPassword;
   await user.save();
-
+  req.flash("info", "패스워드가 수정되었습니다");
   return res.redirect("/users/logout");
 };

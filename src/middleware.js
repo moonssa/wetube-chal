@@ -9,8 +9,10 @@ export const localsMiddleware = (req, res, next) => {
 
 export const protectMiddleware = (req, res, next) => {
   if (req.session.loggedIn) {
+    console.log("????");
     next();
   } else {
+    req.flash("error", "로그인 먼저 하십시오.");
     res.redirect("/login");
   }
 };
@@ -19,6 +21,8 @@ export const publicOnlyMiddleware = (req, res, next) => {
   if (!req.session.loggedIn) {
     return next();
   } else {
+    req.flash("error", "이미 로그인 되어 있습니다.");
+    console.log("*******!!!!!");
     return res.redirect("/");
   }
 };
