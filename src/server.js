@@ -19,6 +19,7 @@ app.set("view engine", "pug");
 app.set("views", process.cwd() + "/src/views");
 app.use(logger);
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json()); // string => json 으로 바꾸어준다.
 
 app.use(
   session({
