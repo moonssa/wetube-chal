@@ -3,8 +3,12 @@
   "version": "1.0.0",
   "description": "2023.0822.start",
   "scripts": {
+    "start": "node build/init.js",
+    "build": "npm run build:server && npm run build:assets",
+    "build:server": "babel src -d build",
+    "build:assets": "webpack --mode=production",
     "dev:server": "nodemon",
-    "dev:assets": "webpack"
+    "dev:assets": "webpack --mode=development -w"
   },
   "repository": {
     "type": "git",
@@ -34,6 +38,7 @@
     "regenerator-runtime": "^0.14.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.23.0",
     "@babel/core": "^7.22.10",
     "@babel/node": "^7.22.10",
     "@babel/preset-env": "^7.22.10",
