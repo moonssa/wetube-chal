@@ -447,6 +447,13 @@ input[type=submit]:disabled,
   color: black;
   margin-bottom: 10px;
 }
+.video__comments button {
+  border: none;
+  outline: none;
+  background-color: transparent;
+  cursor: pointer;
+  font-size: 0.5rem;
+}
 
 a {
   color: inherit;

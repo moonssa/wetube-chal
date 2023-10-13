@@ -4,7 +4,6 @@ import session from "express-session";
 import flash from "express-flash";
 import MongoStore from "connect-mongo";
 
-import storyRouter from "./routers/storyRouter";
 import userRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter";
 import rootRouter from "./routers/rootRouter";
@@ -66,7 +65,6 @@ app.use(flash());
 app.use("/uploads", express.static("uploads"));
 app.use("/static", express.static("assets"));
 app.use("/", rootRouter);
-app.use("/stories", storyRouter);
 app.use("/users", userRouter);
 app.use("/videos", videoRouter);
 app.use("/api", apiRouter);
