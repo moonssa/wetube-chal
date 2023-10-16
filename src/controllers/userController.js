@@ -7,9 +7,7 @@ export const retrieveAllUsers = (req, res) => res.send("<h1> Users Page </h1>");
 
 export const retrieveProfile = async (req, res) => {
   const { id } = req.params;
-  console.log(req);
   const user = await User.findById(id).populate("videos");
-  console.log(user);
   if (!user) {
     return res.status(404).render("404", { pageTitle: "User not found" });
   }
@@ -313,8 +311,6 @@ export const postEdit = async (req, res) => {
     file,
   } = req;
 
-  console.log("*****", file);
-
   if (sessionEmail !== email || sessionUsername !== username) {
     const exists = await User.exists({
       $or: [{ username }, { email }],
@@ -327,11 +323,11 @@ export const postEdit = async (req, res) => {
       });
     }
   }
-
+  const isHeroku = process.env.NODE_ENV === "production";
   const updatedUser = await User.findByIdAndUpdate(
     _id,
     {
-      avatarUrl: file ? file.path : avatarUrl,
+      avatarUrl: file ? (isHeroku ? file.location : file.path) : avatarUrl,
       name,
       email,
       username,
